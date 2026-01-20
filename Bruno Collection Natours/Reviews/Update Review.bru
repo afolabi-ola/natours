@@ -1,0 +1,27 @@
+meta {
+  name: Update Review
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{URL}}api/v1/reviews/694ac4d271d77b6aaf2e808d
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+    "rating":2,
+    "review":"good"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

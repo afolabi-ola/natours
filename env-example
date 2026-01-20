@@ -1,0 +1,27 @@
+NODE_ENV=development
+# NODE_ENV=production
+PORT=8000
+DATABASE=your_online_DATABASE
+DATABASE_LOCAL=your_local_DATABASE
+DATABASE_PASSWORD=your_DATABASE_PASSWORD
+
+#JWT 
+JWT_SECRET=your_jwt_secret_key
+JWT_EXPIRY=JWT_EXPIRY_time_e.g_90d
+JWT_COOKIE_EXPIRY=JWT_Cookie_EXPIRY_time_e.g_90
+
+EMAIL_PORT_DEV=local_email_port_e.g_mailhog
+EMAIL_HOST_DEV=local_email_host_e.g_127.0.0.1
+EMAIL_FROM_DEV=email_from_value
+
+# Brevo SMTP Settings
+EMAIL_HOST_PROD=online_email_host_e.g_brevo
+EMAIL_PORT_PROD=online_email_host
+EMAIL_USERNAME_PROD=online_email_usernam_e.g_.......@smtp-brevo.com
+EMAIL_PASSWORD_PROD=online_email_service_crazy_long_password
+EMAIL_FROM_PROD=email_from_value
+
+
+#STRIPE 
+STRIPE_SECRET_KEY=your_stripe_secret_key_e.g_sk_test_34567...
+STRIPE_PUBLIC_KEY=your_stripe_public_key_e.g_pk_test_234

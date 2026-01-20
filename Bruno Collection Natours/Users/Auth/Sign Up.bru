@@ -1,0 +1,30 @@
+meta {
+  name: Sign Up
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{URL}}api/v1/users/signup
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name":"Afolabi Ola",
+    "email":"olasunkanmiplay@gmail.com",
+    "password":"test1234",
+    "passwordConfirm":"test1234"
+  }
+}
+
+script:post-response {
+  const data=res.body;
+  bru.setEnvVar('jwt', data.token)
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

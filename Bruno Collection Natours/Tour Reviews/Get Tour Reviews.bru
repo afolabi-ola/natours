@@ -1,0 +1,20 @@
+meta {
+  name: Get Tour Reviews
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{URL}}api/v1/tours/694ac48271d77b6aaf2e8088/reviews
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

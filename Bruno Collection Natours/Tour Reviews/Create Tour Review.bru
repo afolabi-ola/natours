@@ -1,0 +1,27 @@
+meta {
+  name: Create Tour Review
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{URL}}api/v1/tours/694ac48271d77b6aaf2e8088/reviews
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+  "review":"Meh",
+    "rating":2
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

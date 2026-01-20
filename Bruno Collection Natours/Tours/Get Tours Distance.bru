@@ -1,0 +1,15 @@
+meta {
+  name: Get Tours Distance
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{URL}}api/v1/tours/distance/34.111745,-118.113491/unit/mi
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

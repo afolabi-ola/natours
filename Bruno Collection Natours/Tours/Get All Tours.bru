@@ -1,0 +1,35 @@
+meta {
+  name: Get All Tours
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{URL}}api/v1/tours
+  body: none
+  auth: none
+}
+
+params:query {
+  ~duration[gte]: 10
+  ~sort: -price
+  ~fields: name,duration,difficulty,price,ratingsQuantity,ratingsAverage
+  ~fields: name,price,startDates
+  ~ratingsAverage[gte]: 4.7
+  ~page: 1
+  ~limit: 2
+  ~sort: -price,-ratingsAverage
+  ~fields: -name
+  ~duration[lt]: 5
+  ~difficulty: easy
+  ~duration: 5
+  ~sort: 1
+  ~page: 2
+  ~duration[lte]: 5
+  ~duration[gt]: 5
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

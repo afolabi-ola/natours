@@ -1,0 +1,16 @@
+meta {
+  name: Get Checkout Session
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{URL}}api/v1/bookings/checkout-session/tourid
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

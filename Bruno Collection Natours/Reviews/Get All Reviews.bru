@@ -1,0 +1,20 @@
+meta {
+  name: Get All Reviews
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{URL}}api/v1/reviews
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

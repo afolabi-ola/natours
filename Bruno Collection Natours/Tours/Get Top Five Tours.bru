@@ -1,0 +1,20 @@
+meta {
+  name: Get Top Five Tours
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{URL}}api/v1/tours/top-5-cheap
+  body: none
+  auth: inherit
+}
+
+params:query {
+  ~limit: 7
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

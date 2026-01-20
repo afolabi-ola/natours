@@ -1,0 +1,33 @@
+meta {
+  name: Create New Tour
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{URL}}api/v1/tours
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+      "name": "New tour guides",
+      "duration": 6,
+      "maxGroupSize": 10,
+      "difficulty": "easy",
+      "price": 200,
+    "priceDiscount":199,
+      "summary": "Exciting adventure in the snow with snowboarding and skiing",
+      "imageCover": "tour-3-cover.jpg" 
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

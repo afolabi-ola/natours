@@ -1,0 +1,38 @@
+meta {
+  name: Update Tour
+  type: http
+  seq: 5
+}
+
+patch {
+  url: {{URL}}api/v1/tours/6967d26d97486185c90df926
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+    "name": "New Tour 1",
+    "duration": 9,
+    "maxGroupSize": 5,
+    "difficulty": "difficult",
+    "ratingsAverage": 3,
+    "price": 2000
+  }
+}
+
+body:multipart-form {
+  imageCover: @file(/home/olasunkanmi/Desktop/All-node-project/4-natours/dev-data/img/new-tour-1.jpg)
+  images: @file(/home/olasunkanmi/Desktop/All-node-project/4-natours/dev-data/img/new-tour-2.jpg)
+  images: @file(/home/olasunkanmi/Desktop/All-node-project/4-natours/dev-data/img/new-tour-3.jpg)
+  images: @file(/home/olasunkanmi/Desktop/All-node-project/4-natours/dev-data/img/new-tour-4.jpg)
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

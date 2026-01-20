@@ -1,0 +1,22 @@
+meta {
+  name: Update Booking
+  type: http
+  seq: 5
+}
+
+patch {
+  url: {{URL}}api/v1/bookings/696cce7def898389f6139f93
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "user":"6966b57108741a18791e66c2"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

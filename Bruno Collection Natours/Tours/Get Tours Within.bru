@@ -1,0 +1,21 @@
+meta {
+  name: Get Tours Within
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{URL}}api/v1/tours/tours-within/distance/400/center/34.111745,-118.113491/unit/mi
+  body: none
+  auth: inherit
+}
+
+vars:pre-request {
+  distance: 200
+  distance: 
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

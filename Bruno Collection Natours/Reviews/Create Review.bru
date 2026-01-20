@@ -1,0 +1,26 @@
+meta {
+  name: Create Review
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{URL}}api/v1/reviews
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+body:json {
+  {
+    "review":""
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
