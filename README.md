@@ -8,7 +8,7 @@ Travel booking and reviews platform built with Express 5, MongoDB, Stripe Checko
 - Tour management with image uploads (Multer + Sharp), CRUD, top-5 alias, stats aggregation, monthly plans, and geospatial queries (within radius, distance calculations).
 - Bookings via Stripe Checkout, including redirect-based booking creation and booking listings per user.
 - Reviews linked to tours/users with create/update/delete and validation hooks.
-- Secure defaults: Helmet + CSP, rate limiting on API routes, cookie parsing, JSON/urlencoded body parsing, and request time stamping. Static assets served from `public/`; views rendered with Pug.
+- Secure defaults: Helmet + CSP, rate limiting on API routes, cookie parsing, JSON/urlencoded body parsing, and request time stamping. Static assets served from `public/` views rendered with Pug.
 
 ## Tech Stack
 
