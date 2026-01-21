@@ -41,5 +41,6 @@
     "moduleDetection": "force",
     "skipLibCheck": true,
     "esModuleInterop": true
-  }
+  },
+  "exclude": ["dev-data", "public", "Bruno Collection Natours"]
 }
