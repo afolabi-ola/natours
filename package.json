@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
-    "start": "dist/app.js",
+    "start": "node dist/server.js",
     "lint": "eslint \"src/**/*.{ts,tsx,js,jsx}\" --ext .ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "debug": "tsx --inspect src/server.ts",
