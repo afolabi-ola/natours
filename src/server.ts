@@ -50,3 +50,12 @@ process.on('unhandledRejection', (err: unknown) => {
     process.exit(1);
   });
 });
+
+process.on('SIGTERM', () => {
+  console.log('👋 SIGTERM RECEIVED. Shutting down gracefully');
+  server.close(() => {
+    console.log('💥 Process terminated!');
+    // No need for process.exit(0) here as the server.close callback
+    // will naturally let the event loop empty and exit.
+  });
+});

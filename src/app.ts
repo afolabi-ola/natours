@@ -2,6 +2,8 @@ import express, { type Request } from 'express';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import compression from 'compression';
+import cors from 'cors';
 import { rateLimit } from 'express-rate-limit';
 import { join } from 'path';
 import { parse } from 'qs';
@@ -18,6 +20,10 @@ const app = express();
 
 app.set('view engine', 'pug');
 app.set('views', join(__dirname, '../src/views'));
+
+app.use(cors());
+
+app.options('*', cors());
 
 app.use(express.static(join(__dirname, `../public`)));
 
@@ -57,6 +63,8 @@ app.use(
     },
   }),
 );
+
+app.use(compression());
 
 //Development logging
 if (NODE_ENV === 'development') {
