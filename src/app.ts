@@ -23,7 +23,7 @@ app.set('views', join(__dirname, '../src/views'));
 
 app.use(cors());
 
-app.options('*', cors());
+app.options('/(.*)', cors());
 
 app.use(express.static(join(__dirname, `../public`)));
 
