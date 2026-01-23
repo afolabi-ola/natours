@@ -15,6 +15,7 @@ import viewsRouter from './routes/viewsRoutes';
 import { NODE_ENV } from './config/env';
 import AppError from './utils/appError';
 import globalErrorHandler from './controllers/errorController';
+import { webhookCheckout } from './controllers/bookingController';
 
 const app = express();
 
@@ -82,6 +83,12 @@ app.use('/api', limiter);
 
 //reading data from query string and parsing it as query obj into req.query
 app.set('query parser', (str: string) => parse(str));
+
+app.post(
+  '/webhook-checkout',
+  express.raw({ type: 'application/json' }),
+  webhookCheckout,
+);
 
 //Reading data from body to req.body
 app.use(express.json({ limit: '10kb' }));

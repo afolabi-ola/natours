@@ -11,6 +11,7 @@ import {
   getOne,
   updateOne,
 } from './handlerFactory';
+import User from '../models/userModel';
 
 const stripeInstance = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
@@ -26,7 +27,8 @@ export const getCheckoutSession = catchAsync(
 
     const session = await stripeInstance.checkout.sessions.create({
       payment_method_types: ['card'],
-      success_url: `${req.protocol}://${req.get('host')}/?tour=${tour.id}&user=${req.user.id}&price=${tour.price}`,
+      // success_url: `${req.protocol}://${req.get('host')}/?tour=${tour.id}&user=${req.user.id}&price=${tour.price}`,
+      success_url: `${req.protocol}://${req.get('host')}/`,
       cancel_url: `${req.protocol}://${req.get('host')}/tour/${tour.slug}`,
       customer_email: req.user.email!,
       client_reference_id: req.params.tourId!,
@@ -55,15 +57,61 @@ export const getCheckoutSession = catchAsync(
   },
 );
 
-export const createBookingCheckout = catchAsync(
+// export const createBookingCheckout = catchAsync(
+//   async (req: Request, res: Response, next: NextFunction) => {
+//     const { tour, user, price } = req.query;
+
+//     if (!tour && !user && !price) return next();
+
+//     await Booking.create({ tour, user, price });
+
+//     res.redirect(req.originalUrl.split('?')[0]!);
+//   },
+// );
+
+const createBookingCheckout = async (session: Stripe.Checkout.Session) => {
+  const tour = session.client_reference_id;
+
+  const userDoc = await User.findOne({ email: session.customer_email });
+
+  if (!userDoc) {
+    console.error('No user found with this email');
+    return;
+  }
+
+  const user = userDoc.id;
+
+  const price = session.amount_total ? session.amount_total : 0;
+
+  await Booking.create({ tour, user, price });
+};
+
+export const webhookCheckout = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { tour, user, price } = req.query;
+    const signature = req.headers ? req.headers['stripe-signature'] : '';
 
-    if (!tour && !user && !price) return next();
+    if (!signature)
+      return next(
+        new AppError(`Webhook error: Invalid or missing signature`, 400),
+      );
 
-    await Booking.create({ tour, user, price });
+    let event: Stripe.Event;
+    try {
+      event = Stripe.webhooks.constructEvent(
+        req.body,
+        signature,
+        process.env.STRIPE_WEBHOOK_SECRET || '',
+      );
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      res.status(400).send(`Webhook error: ${errorMessage}`);
+      return;
+    }
 
-    res.redirect(req.originalUrl.split('?')[0]!);
+    if (event.type === 'checkout.session.completed')
+      createBookingCheckout(event.data.object as Stripe.Checkout.Session);
+
+    res.status(200).json({ recieved: true });
   },
 );
 

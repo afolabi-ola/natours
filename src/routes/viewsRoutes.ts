@@ -8,13 +8,12 @@ import {
   updateUser,
 } from '../controllers/viewsController';
 import { isLoggedIn, protect } from '../controllers/authController';
-import { createBookingCheckout } from '../controllers/bookingController';
 
 const router = Router();
 
 // router.use(isLoggedIn);
 
-router.get('/', createBookingCheckout, isLoggedIn, getOverview);
+router.get('/', isLoggedIn, getOverview);
 
 router.get('/tour/:slug', isLoggedIn, getTour);
 router.get('/login', isLoggedIn, getLoginForm);
