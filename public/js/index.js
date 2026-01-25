@@ -1,5 +1,6 @@
 /*eslint-disable */
 
+import { showAlert } from './alert';
 import { displayMap } from './leaflet';
 import { login, logout } from './login';
 import { bookTour } from './stripe';
@@ -83,3 +84,7 @@ if (bookTourBtn)
     const { tourId } = e.target.dataset;
     bookTour(tourId);
   });
+
+const alertMessage = document.querySelector('body').dataset.alert;
+
+if (alertMessage) showAlert('success', alertMessage, 20);

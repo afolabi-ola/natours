@@ -6,10 +6,13 @@ import {
   getAccount,
   getBookings,
   updateUser,
+  alerts,
 } from '../controllers/viewsController';
 import { isLoggedIn, protect } from '../controllers/authController';
 
 const router = Router();
+
+router.use(alerts);
 
 // router.use(isLoggedIn);
 
