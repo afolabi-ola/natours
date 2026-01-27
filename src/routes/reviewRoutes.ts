@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { protect, restrictTo } from '../controllers/authController';
 import {
+  checkIsBooked,
   createReview,
   deleteReview,
   getAllReviews,
@@ -28,6 +29,7 @@ router
       params: createReviewParamsSchema,
     }),
     setTourUserIds,
+    checkIsBooked,
     createReview,
   );
 

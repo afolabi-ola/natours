@@ -4,6 +4,7 @@ import AppError from '../utils/appError';
 import { getAll, getOne } from './handlerFactory';
 import ReviewService from '../services/reviewService';
 import catchAsync from '../utils/catchAsync';
+import Booking from '../models/bookingModel';
 
 export const setTourUserIds = (
   req: Request,
@@ -15,6 +16,26 @@ export const setTourUserIds = (
 
   if (!req.body.tour) req.body.tour = req.params.tourId;
   if (!req.body.user) req.body.user = req.user.id;
+
+  next();
+};
+
+export const checkIsBooked = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const { tour, user } = req.body;
+
+  const booking = await Booking.findOne({ tour, user });
+
+  if (!booking)
+    return next(
+      new AppError(
+        'You are not not allowed to create reviews on a tour you have not booked',
+        403,
+      ),
+    );
 
   next();
 };
