@@ -7,7 +7,7 @@ import AppError from '../utils/appError';
 import {
   createOne,
   deleteOne,
-  getAll,
+  // getAll,
   getOne,
   updateOne,
 } from './handlerFactory';
@@ -117,7 +117,30 @@ export const webhookCheckout = catchAsync(
   },
 );
 
-export const getAllBookings = getAll(Booking, 'bookings');
+// export const getAllBookings = getAll(Booking, 'bookings');
+
+export const getAllBookings = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    let filter = {};
+
+    const { tourId, userId } = req.params;
+
+    if (tourId) filter = { ...filter, tour: tourId };
+
+    if (userId) filter = { ...filter, user: userId };
+
+    const bookings = await Booking.find(filter);
+
+    res.status(200).json({
+      status: 'success',
+      results: bookings.length,
+      data: {
+        bookings,
+      },
+    });
+  },
+);
+
 export const getBooking = getOne(Booking, 'booking', { path: 'user' });
 export const createBooking = createOne(Booking, 'booking');
 export const updateBooking = updateOne(Booking, 'booking');

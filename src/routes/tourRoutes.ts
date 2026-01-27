@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import reviewRouter from './reviewRoutes';
+import bookingRouter from './bookingRoutes';
 import {
   createTour,
   deleteTour,
@@ -19,6 +20,7 @@ import { protect, restrictTo } from '../controllers/authController';
 const router = Router();
 
 router.use('/:tourId/reviews', reviewRouter);
+router.use('/:tourId/bookings', bookingRouter);
 router.route('/tours-stats').get(getTourStats);
 router.route('/top-5-cheap').get(getTopFiveAlias, getAllTours);
 router

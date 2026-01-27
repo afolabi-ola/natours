@@ -23,8 +23,11 @@ import {
 } from '../controllers/authController';
 import validateRequest from '../controllers/validateRequest';
 import { loginSchema } from '../validators/auth.validator';
+import bookingRouter from './bookingRoutes';
 
 const router = Router();
+
+router.use('/:userId/bookings', bookingRouter);
 
 router.post('/signup', signup);
 router.post('/login', validateRequest({ body: loginSchema }), login);

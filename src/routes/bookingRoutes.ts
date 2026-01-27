@@ -9,7 +9,7 @@ import {
   deleteBooking,
 } from '../controllers/bookingController';
 
-const router = Router();
+const router = Router({ mergeParams: true });
 
 router.get('/checkout-session/:tourId', protect, getCheckoutSession);
 
