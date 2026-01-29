@@ -95,6 +95,8 @@ const createBookingCheckout = async (session: Stripe.Checkout.Session) => {
     { new: true },
   );
 
+  console.log({ updatedTour });
+
   // const boughtDate = tour?.startDates.find((d) => d.date === startDate);
 
   // if (
@@ -119,7 +121,12 @@ const createBookingCheckout = async (session: Stripe.Checkout.Session) => {
   const price = session.amount_total ? session.amount_total : 0;
 
   if (updatedTour)
-    await Booking.create({ tour: updatedTour._id, user, price, startDate });
+    await Booking.create({
+      tour: updatedTour._id,
+      user,
+      price,
+      startDate: new Date(startDate),
+    });
 };
 
 export const webhookCheckout = catchAsync(
