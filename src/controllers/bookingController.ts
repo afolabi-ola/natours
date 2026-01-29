@@ -118,7 +118,8 @@ const createBookingCheckout = async (session: Stripe.Checkout.Session) => {
 
   const price = session.amount_total ? session.amount_total : 0;
 
-  if (updatedTour) await Booking.create({ tour: updatedTour._id, user, price });
+  if (updatedTour)
+    await Booking.create({ tour: updatedTour._id, user, price, startDate });
 };
 
 export const webhookCheckout = catchAsync(
