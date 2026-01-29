@@ -17,8 +17,10 @@ const stripeInstance = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
 export const getCheckoutSession = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    if (!req.params.tourId) {
-      return next(new AppError('Tour ID is required for checkout', 400));
+    if (!req.params.tourId || !req.query.startDate) {
+      return next(
+        new AppError('Tour ID and startDate is required for checkout', 400),
+      );
     }
 
     const tour = await Tour.findById(req.params.tourId);
@@ -32,6 +34,9 @@ export const getCheckoutSession = catchAsync(
       cancel_url: `${req.protocol}://${req.get('host')}/tour/${tour.slug}`,
       customer_email: req.user.email!,
       client_reference_id: req.params.tourId!,
+      metadata: {
+        startDate: req.query.startDate.toString() as string,
+      },
 
       line_items: [
         {
@@ -72,7 +77,35 @@ export const getCheckoutSession = catchAsync(
 // );
 
 const createBookingCheckout = async (session: Stripe.Checkout.Session) => {
-  const tour = session.client_reference_id;
+  const tourId = session.client_reference_id;
+  const { startDate } = session.metadata || {};
+
+  if (!startDate) {
+    console.error('No start date for booking');
+    return;
+  }
+
+  const updatedTour = await Tour.findOneAndUpdate(
+    {
+      _id: tourId,
+      'startDates.dates': startDate,
+      // 'startDates.participants': { $lt: maxGroupSize },
+    },
+    { $inc: { 'startDates.$.participants': 1 } },
+    { new: true },
+  );
+
+  // const boughtDate = tour?.startDates.find((d) => d.date === startDate);
+
+  // if (
+  //   (boughtDate?.participants || 0) >= (tour?.maxGroupSize || 0) ||
+  //   boughtDate?.soldOut
+  // )
+  //   return;
+
+  // tour?.startDates.find((d) => d.date === startDate)?.participants += 1;
+
+  // await tour.save();
 
   const userDoc = await User.findOne({ email: session.customer_email });
 
@@ -85,7 +118,7 @@ const createBookingCheckout = async (session: Stripe.Checkout.Session) => {
 
   const price = session.amount_total ? session.amount_total : 0;
 
-  await Booking.create({ tour, user, price });
+  if (updatedTour) await Booking.create({ tour: updatedTour._id, user, price });
 };
 
 export const webhookCheckout = catchAsync(

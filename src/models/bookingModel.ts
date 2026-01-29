@@ -12,6 +12,7 @@ interface BookingDocType {
   price: number;
   createdAt: Date;
   paid: boolean;
+  startDate: Date;
 }
 
 const bookingSchema = new Schema<BookingDocType>({
@@ -41,6 +42,8 @@ const bookingSchema = new Schema<BookingDocType>({
     type: Boolean,
     default: true,
   },
+
+  startDate: Date,
 });
 
 bookingSchema.pre<Query<BookingDocType[], BookingDocType>>(

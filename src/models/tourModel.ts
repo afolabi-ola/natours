@@ -17,7 +17,11 @@ interface ITour {
   description: string;
   imageCover: string;
   images: string[];
-  startDates: string[];
+  startDates: {
+    date: string;
+    participants: number;
+    soldOut: boolean;
+  }[];
   createdAt: Date;
   secretTour: boolean;
   startLocation: {
@@ -116,7 +120,19 @@ const tourSchema = new Schema<ITour>(
       default: Date.now,
       select: false,
     },
-    startDates: [Date],
+    startDates: [
+      {
+        date: String,
+        participants: {
+          type: Number,
+          default: 0,
+        },
+        soldOut: {
+          type: Boolean,
+          default: false,
+        },
+      },
+    ],
     secretTour: {
       type: Boolean,
       default: false,

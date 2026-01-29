@@ -23,6 +23,8 @@ const newPasswordInput = document.getElementById('password');
 const confirmPasswordInput = document.getElementById('password-confirm');
 const savePasswordBtn = document.querySelector('.btn--save-password');
 
+const startDateSelector = document.getElementById('startDates');
+
 const bookTourBtn = document.getElementById('book-tour');
 
 if (mapBox) {
@@ -79,12 +81,20 @@ if (passwordForm) {
 
 if (bookTourBtn)
   bookTourBtn.addEventListener('click', (e) => {
+    console.log('clicked');
     e.target.textContent = 'Processing...';
 
     const { tourId } = e.target.dataset;
-    bookTour(tourId);
+    bookTour(tourId, startDateSelector.value);
   });
 
 const alertMessage = document.querySelector('body').dataset.alert;
 
 if (alertMessage) showAlert('success', alertMessage, 20);
+
+if (startDateSelector)
+  startDateSelector.addEventListener('change', function (e) {
+    if (this.value) {
+      bookTourBtn.removeAttribute('disabled');
+    }
+  });
