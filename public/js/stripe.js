@@ -8,7 +8,7 @@ export const bookTour = async (tourId, startDate) => {
       `/api/v1/bookings/checkout-session/${tourId}?startDate=${startDate}`,
     );
 
-    // window.location.replace(session.data.session.url);
+    window.location.replace(session.data.session.url);
   } catch (err) {
     console.log(err);
     showAlert('error', err.response.data.message);
