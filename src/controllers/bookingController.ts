@@ -80,6 +80,10 @@ const createBookingCheckout = async (session: Stripe.Checkout.Session) => {
   const tourId = session.client_reference_id;
   const { startDate } = session.metadata || {};
 
+  console.log(
+    `WEBHOOK: Received booking for Tour ${tourId} on Date ${startDate}`,
+  );
+
   if (!startDate) {
     console.error('No start date for booking');
     return;
@@ -96,6 +100,11 @@ const createBookingCheckout = async (session: Stripe.Checkout.Session) => {
   );
 
   console.log({ updatedTour });
+
+  console.log(
+    'WEBHOOK: Update Result ->',
+    updatedTour ? 'Tour Updated' : 'TOUR NOT FOUND',
+  );
 
   // const boughtDate = tour?.startDates.find((d) => d.date === startDate);
 
@@ -120,13 +129,15 @@ const createBookingCheckout = async (session: Stripe.Checkout.Session) => {
 
   const price = session.amount_total ? session.amount_total : 0;
 
-  if (updatedTour)
+  if (updatedTour) {
     await Booking.create({
       tour: updatedTour._id,
       user,
       price,
       startDate: new Date(startDate),
     });
+    console.log('WEBHOOK: Booking Created Successfully');
+  }
 };
 
 export const webhookCheckout = catchAsync(
