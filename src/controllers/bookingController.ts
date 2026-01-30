@@ -88,7 +88,7 @@ const createBookingCheckout = async (session: Stripe.Checkout.Session) => {
   const updatedTour = await Tour.findOneAndUpdate(
     {
       _id: tourId,
-      'startDates.dates': startDate,
+      'startDates.date': startDate,
       // 'startDates.participants': { $lt: maxGroupSize },
     },
     { $inc: { 'startDates.$.participants': 1 } },
