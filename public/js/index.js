@@ -7,6 +7,7 @@ import { bookTour } from './stripe';
 import { updateUserSettings } from './updateSettings';
 
 const loginForm = document.querySelector('#form--login');
+const loginBtn = document.querySelector('#login-btn');
 const loginEmailInput = document.querySelector('#form--login #email');
 const loginPasswordInput = document.querySelector('#form--login #password');
 const mapBox = document.getElementById('map');
@@ -35,6 +36,8 @@ if (mapBox) {
 if (loginForm) {
   loginForm.addEventListener('submit', (e) => {
     e.preventDefault();
+    if (loginBtn) loginBtn.textContent = 'Logging in...';
+
     const email = loginEmailInput.value;
     const password = loginPasswordInput.value;
     login(email, password);

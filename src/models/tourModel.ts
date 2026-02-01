@@ -123,6 +123,7 @@ const tourSchema = new Schema<ITour>(
     startDates: [
       {
         date: String,
+        // required: [true, 'A tour must have a start date'],
         participants: {
           type: Number,
           default: 0,
@@ -251,6 +252,18 @@ tourSchema.pre<Query<ITour[], ITour>>(/^find/, function (next) {
 
 //   next();
 // });
+
+tourSchema.pre('save', function (next) {
+  this.startDates.forEach((startDate) => {
+    if (startDate.participants >= this.maxGroupSize) {
+      startDate.soldOut = true;
+    } else {
+      startDate.soldOut = false;
+    }
+  });
+
+  next();
+});
 
 const Tour = model<ITour>('Tour', tourSchema);
 

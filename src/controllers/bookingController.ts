@@ -77,97 +77,131 @@ export const getCheckoutSession = catchAsync(
 // );
 
 const createBookingCheckout = async (session: Stripe.Checkout.Session) => {
-  const tourId = session.client_reference_id;
-  const { startDate } = session.metadata || {};
+  let incremented = false;
+  let existingBooking;
+  try {
+    const tourId = session.client_reference_id;
+    const { startDate } = session.metadata || {};
 
-  console.log(
-    `WEBHOOK: Received booking for Tour ${tourId} on Date ${startDate}`,
-  );
+    if (!startDate) {
+      throw new Error('No start date provided for booking');
+    }
 
-  if (!startDate) {
-    console.error('No start date for booking');
-    return;
-  }
+    const updatedTour = await Tour.findOneAndUpdate(
+      {
+        _id: tourId,
+        'startDates.date': startDate,
+        'startDates.soldOut': false,
+      },
+      { $inc: { 'startDates.$.participants': 1 } },
+      {
+        new: true,
+        runValidators: true,
+      },
+    );
 
-  const updatedTour = await Tour.findOneAndUpdate(
-    {
-      _id: tourId,
-      'startDates.date': startDate,
-      // 'startDates.participants': { $lt: maxGroupSize },
-    },
-    { $inc: { 'startDates.$.participants': 1 } },
-    { new: true },
-  );
+    if (!updatedTour) throw new Error('No tour found');
 
-  console.log({ updatedTour });
+    incremented = true;
 
-  console.log(
-    'WEBHOOK: Update Result ->',
-    updatedTour ? 'Tour Updated' : 'TOUR NOT FOUND',
-  );
+    const dateObj = updatedTour.startDates.find(
+      (d) =>
+        new Date(d.date).toISOString() === new Date(startDate).toISOString(),
+    );
 
-  // const boughtDate = tour?.startDates.find((d) => d.date === startDate);
+    if (dateObj && dateObj.participants >= updatedTour.maxGroupSize) {
+      await Tour.findOneAndUpdate(
+        {
+          _id: tourId,
+          'startDates.date': startDate,
+        },
+        { $set: { 'startDates.$.soldOut': true } },
+      );
+    }
 
-  // if (
-  //   (boughtDate?.participants || 0) >= (tour?.maxGroupSize || 0) ||
-  //   boughtDate?.soldOut
-  // )
-  //   return;
+    const userDoc = await User.findOne({ email: session.customer_email });
 
-  // tour?.startDates.find((d) => d.date === startDate)?.participants += 1;
+    if (!userDoc) {
+      throw new Error('No user found with that email');
+    }
 
-  // await tour.save();
+    const user = userDoc.id;
 
-  const userDoc = await User.findOne({ email: session.customer_email });
+    const price = session.amount_total ? session.amount_total / 100 : 0;
 
-  if (!userDoc) {
-    console.error('No user found with this email');
-    return;
-  }
-
-  const user = userDoc.id;
-
-  const price = session.amount_total ? session.amount_total : 0;
-
-  if (updatedTour) {
-    await Booking.create({
-      tour: updatedTour._id,
-      user,
-      price,
-      startDate: new Date(startDate),
+    existingBooking = await Booking.findOne({
+      stripeEventId: session.id,
     });
-    console.log('WEBHOOK: Booking Created Successfully');
+
+    if (existingBooking) return;
+
+    if (updatedTour) {
+      await Booking.create({
+        tour: updatedTour._id,
+        user,
+        price,
+        startDate: new Date(startDate),
+        stripeEventId: session.id,
+      });
+    }
+  } catch (error) {
+    console.error('Booking failed:', error);
+
+    const tourId = session.client_reference_id;
+    const { startDate } = session.metadata || {};
+
+    if (incremented)
+      await Tour.findOneAndUpdate(
+        {
+          _id: tourId,
+          'startDates.date': startDate,
+        },
+        {
+          $inc: { 'startDates.$.participants': -1 },
+        },
+      );
+
+    if (!existingBooking?.refunded && session.payment_intent) {
+      await stripeInstance.refunds.create({
+        payment_intent: session.payment_intent.toString(),
+      });
+
+      if (existingBooking)
+        await Booking.findByIdAndUpdate(existingBooking._id, {
+          refunded: true,
+        });
+    }
   }
 };
 
-export const webhookCheckout = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const signature = req.headers ? req.headers['stripe-signature'] : '';
+export const webhookCheckout = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const signature = req.headers ? req.headers['stripe-signature'] : '';
 
-    if (!signature)
-      return next(
-        new AppError(`Webhook error: Invalid or missing signature`, 400),
-      );
+  if (!signature) return res.status(400).send('Missing signature');
 
-    let event: Stripe.Event;
-    try {
-      event = Stripe.webhooks.constructEvent(
-        req.body,
-        signature,
-        process.env.STRIPE_WEBHOOK_SECRET || '',
-      );
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-      res.status(400).send(`Webhook error: ${errorMessage}`);
-      return;
-    }
+  let event: Stripe.Event;
 
-    if (event.type === 'checkout.session.completed')
-      createBookingCheckout(event.data.object as Stripe.Checkout.Session);
+  try {
+    event = Stripe.webhooks.constructEvent(
+      req.body,
+      signature,
+      process.env.STRIPE_WEBHOOK_SECRET || '',
+    );
+  } catch (err) {
+    const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+    res.status(400).send(`Webhook error: ${errorMessage}`);
+    return;
+  }
 
-    res.status(200).json({ recieved: true });
-  },
-);
+  if (event.type === 'checkout.session.completed')
+    await createBookingCheckout(event.data.object as Stripe.Checkout.Session);
+
+  res.status(200).json({ recieved: true });
+};
 
 // export const getAllBookings = getAll(Booking, 'bookings');
 
