@@ -2,8 +2,8 @@ import { config } from 'dotenv';
 import { readFileSync } from 'fs';
 import { connect } from 'mongoose';
 import Tour from '../../src/models/tourModel';
-import User from '../../src/models/userModel';
-import Review from '../../src/models/reviewModel';
+// import User from '../../src/models/userModel';
+// import Review from '../../src/models/reviewModel';
 
 config({
   path: './.env',
@@ -24,17 +24,26 @@ if (DB) {
 }
 
 const tours = JSON.parse(readFileSync(`${__dirname}/tours.json`, 'utf-8'));
-const users = JSON.parse(readFileSync(`${__dirname}/users.json`, 'utf-8'));
-const reviews = JSON.parse(readFileSync(`${__dirname}/reviews.json`, 'utf-8'));
+// const users = JSON.parse(readFileSync(`${__dirname}/users.json`, 'utf-8'));
+// const reviews = JSON.parse(readFileSync(`${__dirname}/reviews.json`, 'utf-8'));
+
+const formattedTours = tours.map((tour: any) => {
+  return {
+    ...tour,
+    startDates: tour.startDates.map((date: string) => ({
+      date: date,
+    })),
+  };
+});
 
 const importData = async function () {
   try {
-    await Tour.create(tours);
-    await User.create(users, { validateBeforeSave: false });
-    await Review.create(reviews);
+    await Tour.create(formattedTours);
+    // await User.create(users, { validateBeforeSave: false });
+    // await Review.create(reviews);
     console.log(`Tour Data imported successfully Total:${tours.length}`);
-    console.log(`User Data imported successfully Total:${users.length}`);
-    console.log(`Review Data imported successfully Total:${reviews.length}`);
+    // console.log(`User Data imported successfully Total:${users.length}`);
+    // console.log(`Review Data imported successfully Total:${reviews.length}`);
   } catch (error) {
     console.log('Import Error', error);
   }
@@ -44,11 +53,11 @@ const importData = async function () {
 const deleteData = async function () {
   try {
     await Tour.deleteMany();
-    await User.deleteMany();
-    await Review.deleteMany();
+    // await User.deleteMany();
+    // await Review.deleteMany();
     console.log('Tours deleted successfully');
-    console.log('Users deleted successfully');
-    console.log('Reviews deleted successfully');
+    // console.log('Users deleted successfully');
+    // console.log('Reviews deleted successfully');
   } catch (error) {
     console.log('Delete db error:', error);
   }

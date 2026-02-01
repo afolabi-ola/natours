@@ -17,7 +17,11 @@ interface ITour {
   description: string;
   imageCover: string;
   images: string[];
-  startDates: string[];
+  startDates: {
+    date: string;
+    participants: number;
+    soldOut: boolean;
+  }[];
   createdAt: Date;
   secretTour: boolean;
   startLocation: {
@@ -116,7 +120,20 @@ const tourSchema = new Schema<ITour>(
       default: Date.now,
       select: false,
     },
-    startDates: [Date],
+    startDates: [
+      {
+        date: String,
+        // required: [true, 'A tour must have a start date'],
+        participants: {
+          type: Number,
+          default: 0,
+        },
+        soldOut: {
+          type: Boolean,
+          default: false,
+        },
+      },
+    ],
     secretTour: {
       type: Boolean,
       default: false,
@@ -235,6 +252,18 @@ tourSchema.pre<Query<ITour[], ITour>>(/^find/, function (next) {
 
 //   next();
 // });
+
+tourSchema.pre('save', function (next) {
+  this.startDates.forEach((startDate) => {
+    if (startDate.participants >= this.maxGroupSize) {
+      startDate.soldOut = true;
+    } else {
+      startDate.soldOut = false;
+    }
+  });
+
+  next();
+});
 
 const Tour = model<ITour>('Tour', tourSchema);
 

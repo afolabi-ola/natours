@@ -7,6 +7,7 @@ import { bookTour } from './stripe';
 import { updateUserSettings } from './updateSettings';
 
 const loginForm = document.querySelector('#form--login');
+const loginBtn = document.querySelector('#login-btn');
 const loginEmailInput = document.querySelector('#form--login #email');
 const loginPasswordInput = document.querySelector('#form--login #password');
 const mapBox = document.getElementById('map');
@@ -23,6 +24,8 @@ const newPasswordInput = document.getElementById('password');
 const confirmPasswordInput = document.getElementById('password-confirm');
 const savePasswordBtn = document.querySelector('.btn--save-password');
 
+const startDateSelector = document.getElementById('startDates');
+
 const bookTourBtn = document.getElementById('book-tour');
 
 if (mapBox) {
@@ -33,6 +36,8 @@ if (mapBox) {
 if (loginForm) {
   loginForm.addEventListener('submit', (e) => {
     e.preventDefault();
+    if (loginBtn) loginBtn.textContent = 'Logging in...';
+
     const email = loginEmailInput.value;
     const password = loginPasswordInput.value;
     login(email, password);
@@ -79,12 +84,20 @@ if (passwordForm) {
 
 if (bookTourBtn)
   bookTourBtn.addEventListener('click', (e) => {
+    console.log('clicked');
     e.target.textContent = 'Processing...';
 
     const { tourId } = e.target.dataset;
-    bookTour(tourId);
+    bookTour(tourId, startDateSelector.value);
   });
 
 const alertMessage = document.querySelector('body').dataset.alert;
 
 if (alertMessage) showAlert('success', alertMessage, 20);
+
+if (startDateSelector)
+  startDateSelector.addEventListener('change', function (e) {
+    if (this.value) {
+      bookTourBtn.removeAttribute('disabled');
+    }
+  });

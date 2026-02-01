@@ -12,6 +12,9 @@ interface BookingDocType {
   price: number;
   createdAt: Date;
   paid: boolean;
+  startDate: Date;
+  stripeEventId: string;
+  refunded: boolean;
 }
 
 const bookingSchema = new Schema<BookingDocType>({
@@ -41,7 +44,19 @@ const bookingSchema = new Schema<BookingDocType>({
     type: Boolean,
     default: true,
   },
+
+  startDate: Date,
+  stripeEventId: {
+    type: String,
+    // unique: true,
+  },
+  refunded: {
+    type: Boolean,
+    default: false,
+  },
 });
+
+bookingSchema.index({ stripeEventId: 1 }, { unique: true });
 
 bookingSchema.pre<Query<BookingDocType[], BookingDocType>>(
   /^find/,

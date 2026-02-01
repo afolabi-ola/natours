@@ -56,5 +56,5 @@
       "extensions": [".js", ".jsx", ".ts", ".tsx"]
     }
   },
-  "ignorePatterns": ["dist"]
+  "ignorePatterns": ["dist", "public/"]
 }

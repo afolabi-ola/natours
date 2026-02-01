@@ -19,6 +19,9 @@ import { webhookCheckout } from './controllers/bookingController';
 
 const app = express();
 
+// Add this line for Render/Heroku/Cloud deployments
+app.set('trust proxy', 1);
+
 app.set('view engine', 'pug');
 app.set('views', join(__dirname, '../src/views'));
 
