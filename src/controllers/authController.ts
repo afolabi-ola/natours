@@ -296,3 +296,15 @@ export const updateMyPassword = catchAsync(
     createSendToken(user, 200, res);
   },
 );
+
+export const isDemoUser = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    if (req.user.isDemoUser) {
+      return next(
+        new AppError('Demo users are not allowed to perform this action', 403),
+      );
+    }
+
+    next();
+  },
+);

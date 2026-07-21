@@ -45,6 +45,15 @@ export const getReview = getOne(Review, 'review');
 
 export const createReview = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
+    const existingReview = await Review.findOne({
+      tour: req.body.tour,
+      user: req.body.user,
+    });
+
+    if (existingReview) {
+      return next(new AppError('You have already reviewed this tour.', 400));
+    }
+
     const review = await ReviewService.create({
       review: req.body.review,
       rating: req.body.rating,
@@ -85,6 +94,27 @@ export const deleteReview = catchAsync(
       status: 'success',
       data: {
         review,
+      },
+    });
+  },
+);
+
+export const getMyReviews = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const reviews = await Review.find({ user: res.locals.user.id }).populate({
+      path: 'tour',
+      select: 'name imageCover',
+    });
+
+    if (!reviews || reviews.length === 0) {
+      return next(new AppError('No reviews found for this user.', 404));
+    }
+
+    res.status(200).json({
+      status: 'success',
+      results: reviews.length,
+      data: {
+        reviews,
       },
     });
   },

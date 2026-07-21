@@ -1,0 +1,43 @@
+mixin myReviewCard(review)
+  .dashboard-review__card(id=`review-card-${review.id}`, data-review-id=review.id)
+    .dashboard-review__hero
+      img.dashboard-review__tour-img(src=`/img/tours/${review.tour.imageCover}`, alt=`${review.tour.name}`)
+    
+    .dashboard-review__content
+      //- Standard View State Container
+      .dashboard-review__view-state(id=`view-state-${review.id}`)
+        .dashboard-review__header
+          h3.dashboard-review__tour-name= review.tour.name
+          span.dashboard-review__date= new Date(review.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+        
+        //- Current Star Display
+        .dashboard-review__rating(id=`rating-display-${review.id}`)
+          each star in [1, 2, 3, 4, 5]
+            svg.dashboard-review__star(class=`dashboard-review__star--${review.rating >= star ? 'active' : 'inactive'}`)
+              use(xlink:href='/img/icons.svg#icon-star')
+        
+        p.dashboard-review__text(id=`text-display-${review.id}`)= review.review
+        
+        .dashboard-review__actions
+          a.dashboard-review__btn.dashboard-review__btn--view(href=`/tour/${review.tour.slug || review.tour.id}`) View Tour
+          .dashboard-review__btn-group
+            //- Class hooks and data attributes for safe event delegation
+            button.dashboard-review__btn.dashboard-review__btn--edit(data-review-id=review.id) Edit
+            button.dashboard-review__btn.dashboard-review__btn--delete(data-review-id=review.id) Delete
+
+      //- Interactive Form Edit State Container (Hidden by Default)
+      //- Form submission is intercepted via JS using the class identifier hook
+      form.dashboard-review__edit-form(id=`edit-form-${review.id}`, data-review-id=review.id, style="display: none;")
+        h3.dashboard-review__tour-name= `Editing review for ${review.tour.name}`
+        
+        .edit-rating-group
+          label Rating:
+          select.edit-rating-select(id=`edit-rating-input-${review.id}`)
+            each val in [1, 2, 3, 4, 5]
+              option(value=val, selected=(review.rating === val))= `${val} Stars`
+        
+        textarea.edit-review-textarea(id=`edit-text-input-${review.id}`, required=true, rows="3")= review.review
+        
+        .dashboard-review__actions
+          button.dashboard-review__btn.dashboard-review__btn--save(type="submit") Save Changes
+          button.dashboard-review__btn.dashboard-review__btn--cancel(type="button", data-review-id=review.id) Cancel

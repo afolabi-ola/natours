@@ -57,7 +57,7 @@ export default class ApiFeatures<T> {
 
   filter() {
     const queryObj = { ...this.queryString };
-    const excludedFields = ['sort', 'fields', 'page', 'limit'];
+    const excludedFields = ['sort', 'fields', 'page', 'limit', 'search'];
     excludedFields.forEach((field) => delete queryObj[field]);
 
     // 1b) Advanced Filtering
@@ -101,6 +101,20 @@ export default class ApiFeatures<T> {
 
     this.query = this.query.skip(skip).limit(Number(limit));
 
+    return this;
+  }
+
+  search() {
+    if (this.queryString.search) {
+      const searchTerm = this.queryString.search.toString();
+      this.query = this.query.find({
+        $or: [
+          { name: { $regex: searchTerm, $options: 'i' } },
+          { summary: { $regex: searchTerm, $options: 'i' } },
+          { difficulty: { $regex: searchTerm, $options: 'i' } },
+        ],
+      });
+    }
     return this;
   }
 }
