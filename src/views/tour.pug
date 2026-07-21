@@ -71,6 +71,31 @@ block content
             each review in tour.reviews 
                 +reviewCard(review)
 
+    //- Dynamic Review Writing Workspace Module
+    if user && hasBooked
+        section.section-write-review
+            .write-review-container
+                h2.heading-secondary.ma-bt-md Share Your Experience!
+                p.write-review-subtitle Tell the community what you loved about the #{tour.name} tour.
+                
+                form#form--create-review(data-tour-id=tour.id)
+                    //- Star Selection Strip
+                    .write-review__stars-group
+                        label.write-review__label Rating:
+                        .interactive-stars-rating
+                            each starVal in [1, 2, 3, 4, 5]
+                                svg.interactive-star(data-star=starVal)
+                                    use(xlink:href='/img/icons.svg#icon-star')
+                        //- Hidden Input to hold selected stars safely for submission
+                        input#review-rating-value(type="hidden" name="rating" value="5" required)
+
+                    //- Review Text Area
+                    .write-review__input-group
+                        label.write-review__label(for="review-text-input") Your Review:
+                        textarea#review-text-input(name="review" rows="4" placeholder="What made this experience unforgettable? How were the guides?" required)
+
+                    button.btn.btn--green.btn--small#btn-submit-review(type="submit") Submit My Review
+
     section.section-cta
         .cta
             .cta__img.cta__img--logo

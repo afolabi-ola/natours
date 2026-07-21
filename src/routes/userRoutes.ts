@@ -20,6 +20,7 @@ import {
   updateMyPassword,
   restrictTo,
   logout,
+  isDemoUser,
 } from '../controllers/authController';
 import validateRequest from '../controllers/validateRequest';
 import { loginSchema } from '../validators/auth.validator';
@@ -38,9 +39,15 @@ router.patch('/resetPassword/:token', resetPassword);
 router.use(protect);
 
 router.get('/me', getMe, getUser);
-router.patch('/updateMe', uploadUserPhoto, resizeUserPhoto, updateMe);
-router.delete('/deleteMe', deleteMe);
-router.patch('/updateMyPassword', updateMyPassword);
+router.patch(
+  '/updateMe',
+  isDemoUser,
+  uploadUserPhoto,
+  resizeUserPhoto,
+  updateMe,
+);
+router.delete('/deleteMe', isDemoUser, deleteMe);
+router.patch('/updateMyPassword', isDemoUser, updateMyPassword);
 
 router.use(restrictTo('admin'));
 router.route('/').get(getAllUsers).post(createUser);

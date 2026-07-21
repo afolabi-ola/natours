@@ -15,6 +15,7 @@ interface BookingDocType {
   startDate: Date;
   stripeEventId: string;
   refunded: boolean;
+  paymentIntentId: string;
 }
 
 const bookingSchema = new Schema<BookingDocType>({
@@ -53,6 +54,9 @@ const bookingSchema = new Schema<BookingDocType>({
   refunded: {
     type: Boolean,
     default: false,
+  },
+  paymentIntentId: {
+    type: String,
   },
 });
 

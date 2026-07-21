@@ -8,6 +8,7 @@ import {
   getReview,
   setTourUserIds,
   updateReview,
+  getMyReviews,
 } from '../controllers/reviewController';
 import validateRequest from '../controllers/validateRequest';
 import {
@@ -18,6 +19,8 @@ import {
 const router = Router({ mergeParams: true });
 
 router.use(protect);
+
+router.get('/my-reviews', restrictTo('user'), getMyReviews);
 
 router
   .route('/')

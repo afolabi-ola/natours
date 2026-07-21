@@ -1,0 +1,24 @@
+extend base
+
+include _myReviewCard
+
+block content
+  .reviews-dashboard
+    .reviews-dashboard__header
+      h1.heading-secondary My Reviews
+      p.reviews-dashboard__subtitle Manage and view all the experiences you have shared with the Natours community.
+    
+    .reviews__container
+      if !reviews || reviews.length === 0
+        //- Enhanced Empty State Graphic Card
+        .reviews__empty-state
+          .reviews__empty-icon-box
+            svg.reviews__empty-icon
+              use(xlink:href='/img/icons.svg#icon-star')
+          h3.reviews__empty-title No Reviews Written Yet
+          p.reviews__empty-text You haven't shared your thoughts on any tours yet. Your feedback helps other travelers discover incredible experiences!
+          a.reviews__empty-btn(href='/my-tours') Review a Past Tour
+      else
+        .reviews__grid-layout
+          each review in reviews
+            +myReviewCard(review)

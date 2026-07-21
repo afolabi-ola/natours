@@ -107,6 +107,7 @@ export const getAll = <T>(QModel: Model<T>, resource = 'data') =>
       filter = { tour: req.params.tourId };
 
     const features = new ApiFeatures(QModel.find(filter), req.query)
+      .search()
       .filter()
       .sort()
       .limitFields()

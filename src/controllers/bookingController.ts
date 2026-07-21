@@ -142,6 +142,7 @@ const createBookingCheckout = async (session: Stripe.Checkout.Session) => {
         price,
         startDate: new Date(startDate),
         stripeEventId: session.id,
+        paymentIntentId: session.payment_intent?.toString(),
       });
     }
   } catch (error) {

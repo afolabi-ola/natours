@@ -15,6 +15,7 @@ export interface UserModelType extends Document {
   active: boolean;
   passwordResetToken: string | undefined;
   passwordResetExpires: Date | undefined;
+  isDemoUser: boolean;
 }
 
 export interface UserDocType extends UserModelType {
@@ -84,6 +85,10 @@ const userSchema = new Schema<UserDocType>({
   passwordResetToken: String,
 
   passwordResetExpires: Date,
+  isDemoUser: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 userSchema.pre('save', async function (next) {

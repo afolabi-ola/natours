@@ -1,0 +1,20 @@
+meta {
+  name: Get My Reviews
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{URL}}api/v1/reviews/my-reviews
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
