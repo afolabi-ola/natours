@@ -14,7 +14,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "debug": "tsx --inspect src/server.ts",
     "watch:js": "parcel watch public/js/index.js --dist-dir public/js/bundle --public-url /js/bundle",
-    "build:js": "parcel build public/js/index.js --dist-dir public/js/bundle --public-url /js/bundle"
+    "build:js": "parcel build public/js/index.js --dist-dir public/js/bundle --public-url /js/bundle",
+    "restore-demo-reviews": "tsx dev-data/data/restoreDemoReviews.ts"
   },
   "author": "Afolabi Ola",
   "license": "ISC",
