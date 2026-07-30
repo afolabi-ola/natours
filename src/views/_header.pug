@@ -1,3 +1,5 @@
+include _mixins
+
 header.header 
   nav.nav.nav--tours
     a.nav__el(href='/') All tours
@@ -13,8 +15,8 @@ header.header
     if user 
       button.nav__el.nav__el--logout#logout Log out
       a.nav__el(href='/me')
-          img.nav__user-img(src=`/img/users/${user.photo}` alt=`Photo of ${user.name}`)
-          span= user.name.split(' ')[0]
+        +userPhoto(user.photo, 'nav__user-img', `Photo of ${user.name}`)
+        span= user.name.split(' ')[0]
     else
       a.nav__el(href='/login') Log in
       a.nav__el.nav__el--cta(href='/signup') Sign up

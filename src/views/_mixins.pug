@@ -1,0 +1,5 @@
+mixin userPhoto(photo, className, alt)
+    if photo && photo.startsWith('http')
+        img(class=className src=photo alt=alt)
+    else
+        img(class=className src=`/img/users/${photo}` alt=alt)

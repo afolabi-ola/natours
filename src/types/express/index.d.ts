@@ -5,5 +5,12 @@ declare global {
     interface Request {
       user: UserDocType;
     }
+
+    namespace Multer {
+      interface File {
+        filename?: string;
+        publicId?: string;
+      }
+    }
   }
 }

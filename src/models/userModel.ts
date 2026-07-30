@@ -16,6 +16,7 @@ export interface UserModelType extends Document {
   passwordResetToken: string | undefined;
   passwordResetExpires: Date | undefined;
   isDemoUser: boolean;
+  photoPublicId: string | undefined;
 }
 
 export interface UserDocType extends UserModelType {
@@ -88,6 +89,9 @@ const userSchema = new Schema<UserDocType>({
   isDemoUser: {
     type: Boolean,
     default: false,
+  },
+  photoPublicId: {
+    type: String,
   },
 });
 
