@@ -316,14 +316,14 @@ body {
   -ms-flex-align: center;
   align-items: center;
 }
-@media only screen and (max-width: 62.5em) {
+/* @media only screen and (max-width: 62.5em) {
   .header {
     -webkit-box-orient: vertical;
     -webkit-box-direction: normal;
     -ms-flex-direction: column;
     flex-direction: column;
   }
-}
+} */
 .header__logo img {
   height: 3.5rem;
 }
@@ -2018,4 +2018,103 @@ body {
 
 #btn-submit-review{
   display: block;
+}
+
+
+@media screen and (max-width:900px) {
+  body{
+    padding: 0;
+   
+  }
+  .main{
+    padding:8rem 1rem;
+    display: flex;
+    justify-content: center;
+  }
+
+.card-container{
+  margin: 0;
+  width: 100%;
+ grid-template-columns: repeat(2, 1fr);
+  align-items: center;
+  text-align: center;
+  border: 1px solid red;
+
+}
+
+
+  
+}
+@media screen and (max-width:500px) {
+.header{
+  /* display: flex; */
+  border: 1px solid red;
+  padding:0;
+}
+
+.header__logo img{ 
+  width: 50px;
+  /* height: 50px; */
+}
+
+.nav .nav--tours .nav__el{
+  display: none;
+}
+
+.card-container{
+ display: flex;
+ flex-wrap: wrap;
+  align-items: center;
+  text-align: center;
+
+
+}
+
+ .section-description {
+    /* Forces modern flex layout and overrides legacy box engines */
+    display: flex; 
+    flex-direction: column;
+
+    /* Clears the old layout restrictions if they were inherited */
+    -webkit-box-orient: horizontal; 
+    -webkit-box-direction: normal;   
+  }
+
+  .section-pictures{
+    flex-direction: column;
+    gap:1rem;
+    align-items: center;
+ padding: 0 1rem;
+  }
+  .picture-box__img{
+    height: 100%;
+    width: 90%;
+  }
+
+  .reviews{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    height: 350px;
+    padding: 1rem 0;
+    overflow-y: auto;
+    overflow-x:hidden;
+  }
+
+  .cta{
+   position:relative;
+  }
+
+  .cta__img .cta__img--logo{
+position: relative;
+  }
+
+  .cta__content{
+    display: flex;
+    flex-direction: column;
+  }
+  .user-view{
+    display: flex;flex-direction: column;
+  }
+
 }

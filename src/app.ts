@@ -55,6 +55,7 @@ app.use(
         'https://*.tile.openstreetmap.org',
         'https://*.fastly.net', // 👈 Allows your CartoDB tiles
         'https://*.cloudflare.com',
+        'https://res.cloudinary.com',
       ],
       connectSrc: [
         "'self'",
@@ -62,6 +63,7 @@ app.use(
         'https://*.tile.openstreetmap.org',
         'https://*.fastly.net', // 👈 Allows the map connection
         'ws://127.0.0.1:*/', // 👈 Allows Parcel's HMR WebSocket
+        'ws://localhost:*',
       ],
       upgradeInsecureRequests: [],
     },

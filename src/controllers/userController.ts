@@ -11,6 +11,7 @@ import {
   // updateOne,
   updateOneSafe,
 } from './handlerFactory';
+import uploadToCloudinary from '../utils/helpers';
 
 // const multerStorage = diskStorage({
 //   destination: (req, file, cb) => {
@@ -40,13 +41,24 @@ export const resizeUserPhoto = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     if (!req.file) return next();
 
-    req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
+    // req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
 
-    await sharp(req.file.buffer)
+    // await sharp(req.file.buffer)
+    //   .resize(500, 500)
+    //   .toFormat('jpeg')
+    //   .jpeg({ quality: 90 })
+    //   .toFile(`public/img/users/${req.file.filename}`);
+
+    const buffer = await sharp(req.file.buffer)
       .resize(500, 500)
       .toFormat('jpeg')
       .jpeg({ quality: 90 })
-      .toFile(`public/img/users/${req.file.filename}`);
+      .toBuffer();
+
+    const result = await uploadToCloudinary(buffer, `user-${req.user.id}`);
+
+    req.file.filename = result.secure_url;
+    req.file.publicId = result.publicId;
 
     next();
   },
@@ -104,9 +116,32 @@ export const updateMe = catchAsync(
         ),
       );
 
+    //3. Get the current user
+    const user = await User.findById(req.user.id);
+    if (!user) return next(new AppError('User not found', 404));
+
     const filteredBody = filterObj(req.body, 'name', 'email');
 
-    if (req.file) filteredBody.photo = req.file.filename;
+    if (req.file) {
+      filteredBody.photo = req.file.filename;
+      filteredBody.photoPublicId = req.file.publicId;
+
+      //no need to destroy anymore we are just overwriting the image in cloudinary with the same publicId so no need to destroy the old one
+
+      // if (user.photoPublicId) {
+      //   await cloudinary.uploader.destroy(
+      //     user.photoPublicId,
+      //     { invalidate: true },
+      //     (error, result) => {
+      //       if (error)
+      //         //eslint-disable-next-line no-console
+      //         console.error('Error deleting old photo from Cloudinary:', error);
+      //       //eslint-disable-next-line no-console
+      //       else console.log('Old photo deleted from Cloudinary:', result);
+      //     },
+      //   );
+      // }
+    }
 
     const updatedUser = await User.findByIdAndUpdate(
       req.user.id,
