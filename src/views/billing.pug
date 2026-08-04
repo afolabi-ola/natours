@@ -1,5 +1,7 @@
 extend base
 
+include _mixins
+
 block content
   //- Custom template helper function to clean up mixed data types
   - 
@@ -13,74 +15,69 @@ block content
   - const totalSpent = bookings ? bookings.reduce((acc, b) => b.paid && !b.refunded ? acc + getDisplayPrice(b) : acc, 0) : 0
   - const totalRefunds = bookings ? bookings.filter(b => b.refunded).length : 0
 
-  .billing-view
-    .billing-view__header
-      h1.heading-secondary Billing Information
-      p.billing-view__description Here you can view and manage your billing transactions for your Natours account.
+  main.main
+    .user-view
+      nav.user-view__menu
+        ul.side-nav
+          +profileNavItem('/me','Settings','settings')
+          +profileNavItem('/my-tours','My bookings','briefcase')
+          +profileNavItem('/my-reviews','My reviews','star')
+          +profileNavItem('/billing','Billing','credit-card', true)
 
-    //- 1. Top Summary Cards Grid Section
-    .billing-stats-grid
-      .billing-stat-card
-        .billing-stat-card__label Total Bookings
-        .billing-stat-card__value= totalBookings
-      .billing-stat-card
-        .billing-stat-card__label Total Spent
-        .billing-stat-card__value= `$${totalSpent.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`
-      .billing-stat-card
-        .billing-stat-card__label Refunds
-        .billing-stat-card__value= totalRefunds
+      .user-view__content
+        .user-view__form-container
+          .billing-view
+            .billing-view__header
+              h1.heading-secondary Billing Information
+              p.billing-view__description Here you can view and manage your billing transactions for your Natours account.
 
-    //- 2. Main Billing Responsive Table Wrapper
-    .billing-table-container
-      table.billing-table
-        thead
-          tr
-            th Tour Booked
-            th Purchase Date
-            th Booking ID
-            th Tour Date
-            th Amount
-            th Status
-        tbody
-          if bookings && bookings.length > 0
-            each booking in bookings
-              //- Compute normalized row price once per iteration
-              - const displayPrice = getDisplayPrice(booking)
-              tr
-                //- Tour Details
-                td.font-weight-bold= booking.tour.name
-                
-                //- Created Date
-                td= new Date(booking.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-                
-                //- Booking ID
-                td.billing-table__id= `BK-${booking._id.toString().slice(-8).toUpperCase()}`
-                
+            .billing-stats-grid
+              .billing-stat-card
+                .billing-stat-card__label Total Bookings
+                .billing-stat-card__value= totalBookings
+              .billing-stat-card
+                .billing-stat-card__label Total Spent
+                .billing-stat-card__value= `$${totalSpent.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`
+              .billing-stat-card
+                .billing-stat-card__label Refunds
+                .billing-stat-card__value= totalRefunds
 
-                //- Tour Start Date
-                td
-                  if booking.startDate
-                    = new Date(booking.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+            .billing-table-container
+              table.billing-table
+                thead
+                  tr
+                    th Tour Booked
+                    th Purchase Date
+                    th Booking ID
+                    th Tour Date
+                    th Amount
+                    th Status
+                tbody
+                  if bookings && bookings.length > 0
+                    each booking in bookings
+                      - const displayPrice = getDisplayPrice(booking)
+                      tr
+                        td.font-weight-bold= booking.tour.name
+                        td= new Date(booking.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                        td.billing-table__id= `BK-${booking._id.toString().slice(-8).toUpperCase()}`
+                        td
+                          if booking.startDate
+                            = new Date(booking.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                          else
+                            span.text-muted —
+                        td.font-weight-bold= `$${displayPrice.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`
+                        td
+                          if booking.refunded
+                            span.billing-badge.billing-badge--refunded Refunded
+                          else if booking.paid
+                            span.billing-badge.billing-badge--paid Paid
+                          else
+                            span.billing-badge.billing-badge--pending Pending
                   else
-                    span.text-muted —
+                    tr
+                      td(colspan="6" style="text-align: center; padding: 3rem; color: #777;") No transaction records found under this account.
 
-                //- Formatted Safe Price (e.g., $1,197)
-                td.font-weight-bold= `$${displayPrice.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`
-                
-                //- Status badge switching
-                td
-                  if booking.refunded
-                    span.billing-badge.billing-badge--refunded Refunded
-                  else if booking.paid
-                    span.billing-badge.billing-badge--paid Paid
-                  else
-                    span.billing-badge.billing-badge--pending Pending
-          else
-            tr
-              td(colspan="6" style="text-align: center; padding: 3rem; color: #777;") No transaction records found under this account.
-
-    //- Helpful Context Footer Info Block
-    .billing-footer-info
-      p Need to change your booking?
-      p If you need to modify or cancel your booking, please contact the Natours team before your scheduled tour date.
-        | .
+            .billing-footer-info
+              p Need to change your booking?
+              p If you need to modify or cancel your booking, please contact the Natours team before your scheduled tour date.
+                | .

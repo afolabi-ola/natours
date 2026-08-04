@@ -103,10 +103,9 @@ export const getBookings = catchAsync(
     const tourIds = bookings.map((el) => el.tour);
     const tours = await Tour.find({ _id: { $in: tourIds } });
 
-    res.status(200).render('overview', {
+    res.status(200).render('bookings', {
       title: 'My Tours',
       tours,
-      isMyBookings: true, // Flag passed to Pug to handle the context custom empty state
     });
   },
 );

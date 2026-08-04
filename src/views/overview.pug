@@ -4,26 +4,22 @@ block content
     main.main
         if tours.length === 0
             .overview__empty-state
-                if isMyBookings
-                    //- Case A: User has 0 booked tours
-                    .overview__empty-icon-box
-                        svg.overview__empty-icon
-                            use(xlink:href='/img/icons.svg#icon-compass')
-                    h2.heading-secondary You haven't booked any tours yet!
-                    p.overview__empty-text Ready for your next big adventure? Browse our hand-crafted experiences and start exploring the world today.
-                    a.btn.btn--green.btn--large(href='/') Discover New Tours
-
-                else if isSearch
-                    //- Case B: No results matching a search query
+                if isSearch
                     .overview__empty-icon-box
                         svg.overview__empty-icon
                             use(xlink:href='/img/icons.svg#icon-search')
                     h2.heading-secondary No tours matched your search
                     p.overview__empty-text We couldn't find anything matching "#{searchQuery}". Try checking your spelling or searching for a different destination.
                     a.btn.btn--green.btn--large(href='/') Clear Search
+                else
+                    .overview__empty-icon-box
+                        svg.overview__empty-icon
+                            use(xlink:href='/img/icons.svg#icon-compass')
+                    h2.heading-secondary No tours available right now
+                    p.overview__empty-text Check back soon for new adventures.
+                    a.btn.btn--green.btn--large(href='/') Browse Tours
 
         else
-            //- Display cards normally if array has elements
             .card-container
                 each tour in tours
                     .card
@@ -44,7 +40,6 @@ block content
                             .card__data
                                 svg.card__icon
                                     use(xlink:href='/img/icons.svg#icon-calendar')
-                                //- Handled a safe native fallback fallback checking case if startDates array is ever empty
                                 span= tour.startDates && tour.startDates.length > 0 ? new Date(tour.startDates[0].date).toLocaleString('en-ng',{month:'long',year:'numeric'}) : 'Coming Soon'
                             .card__data
                                 svg.card__icon
