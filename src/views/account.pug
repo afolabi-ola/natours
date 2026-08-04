@@ -1,30 +1,25 @@
 extends base
 
-mixin navItem(link,label,icon, active=false)
-    li(class=`${active?'side-nav--active':''}`)
-        a(href=`${link}`)
-            svg
-                use(xlink:href=`img/icons.svg#icon-${icon}`)
-            | #{label}
+include _mixins
 
 block content
     main.main
         .user-view
             nav.user-view__menu
                 ul.side-nav
-                    +navItem('#','Settings','settings',true)
-                    +navItem('/my-tours','My bookings','briefcase')
-                    +navItem('/my-reviews','My reviews','star')
-                    +navItem('/billing','Billing','credit-card')
+                    +profileNavItem('/me','Settings','settings',true)
+                    +profileNavItem('/my-tours','My bookings','briefcase')
+                    +profileNavItem('/my-reviews','My reviews','star')
+                    +profileNavItem('/billing','Billing','credit-card')
 
                 if(user.role==='admin')  
                     .admin-nav
                         h5.admin-nav__heading Admin
                         ul.side-nav
-                            +navItem('#','Manage tours','map')
-                            +navItem('#','Manage users','users')
-                            +navItem('#','Manage reviews','star')
-                            +navItem('#','Manage bookings','briefcase')
+                            +profileNavItem('#','Manage tours','map')
+                            +profileNavItem('#','Manage users','users')
+                            +profileNavItem('#','Manage reviews','star')
+                            +profileNavItem('#','Manage bookings','briefcase')
 
             .user-view__content
                 .user-view__form-container

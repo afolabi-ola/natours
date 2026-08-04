@@ -3,3 +3,10 @@ mixin userPhoto(photo, className, alt)
         img(class=className src=photo alt=alt)
     else
         img(class=className src=`/img/users/${photo}` alt=alt)
+
+mixin profileNavItem(link,label,icon,active=false)
+    li(class=`${active ? 'side-nav--active' : ''}`)
+        a(href=link)
+            svg
+                use(xlink:href=`/img/icons.svg#icon-${icon}`)
+            span.side-nav__label= label

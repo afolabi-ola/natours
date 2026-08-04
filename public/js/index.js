@@ -25,6 +25,8 @@ const loginEmailInput = document.querySelector('#form--login #email');
 const loginPasswordInput = document.querySelector('#form--login #password');
 const mapBox = document.getElementById('map');
 const logoutBtn = document.getElementById('logout');
+const headerMenuToggle = document.getElementById('header-menu-toggle');
+const headerNavLinks = document.getElementById('header-nav-links');
 
 const accountForm = document.querySelector('.form-user-data');
 const accountNameInput = document.querySelector('.form-user-data #name');
@@ -84,6 +86,27 @@ if (loginForm) {
 
 if (logoutBtn) {
   logoutBtn.addEventListener('click', logout);
+}
+
+if (headerMenuToggle && headerNavLinks) {
+  headerMenuToggle.addEventListener('click', () => {
+    const isOpen = headerNavLinks.classList.toggle('nav--open');
+    headerMenuToggle.setAttribute('aria-expanded', String(isOpen));
+  });
+
+  headerNavLinks.addEventListener('click', (e) => {
+    if (e.target.closest('.nav__el')) {
+      headerNavLinks.classList.remove('nav--open');
+      headerMenuToggle.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!headerNavLinks.contains(e.target) && !headerMenuToggle.contains(e.target)) {
+      headerNavLinks.classList.remove('nav--open');
+      headerMenuToggle.setAttribute('aria-expanded', 'false');
+    }
+  });
 }
 
 if (accountForm) {

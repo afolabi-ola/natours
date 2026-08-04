@@ -1,0 +1,75 @@
+extends base
+
+include _mixins
+
+block content
+    main.main
+        .user-view
+            nav.user-view__menu
+                ul.side-nav
+                    +profileNavItem('/me','Settings','settings')
+                    +profileNavItem('/my-tours','My bookings','briefcase', true)
+                    +profileNavItem('/my-reviews','My reviews','star')
+                    +profileNavItem('/billing','Billing','credit-card')
+
+                if(user && user.role === 'admin')
+                    .admin-nav
+                        h5.admin-nav__heading Admin
+                        ul.side-nav
+                            +profileNavItem('#','Manage tours','map')
+                            +profileNavItem('#','Manage users','users')
+                            +profileNavItem('#','Manage reviews','star')
+                            +profileNavItem('#','Manage bookings','briefcase')
+
+            .user-view__content.user-view__content--wide
+                .user-view__form-container
+                    if tours.length === 0
+                        .overview__empty-state
+                            .overview__empty-icon-box
+                                svg.overview__empty-icon
+                                    use(xlink:href='/img/icons.svg#icon-compass')
+                            h2.heading-secondary You haven't booked any tours yet!
+                            p.overview__empty-text Ready for your next big adventure? Browse our hand-crafted experiences and start exploring the world today.
+                            a.btn.btn--green.btn--large(href='/') Discover New Tours
+
+                    else
+                        .card-container-bookings
+                            each tour in tours
+                                .card
+                                    .card__header
+                                        .card__picture
+                                            .card__picture-overlay &nbsp;
+                                            img.card__picture-img(src=`/img/tours/${tour.imageCover}` alt=`${tour.name}`)
+                                        h3.heading-tertirary
+                                            span= tour.name
+
+                                    .card__details
+                                        h4.card__sub-heading= `${tour.difficulty} ${tour.duration}-day tour`
+                                        p.card__text= tour.summary
+                                        .card__data
+                                            svg.card__icon
+                                                use(xlink:href='/img/icons.svg#icon-map-pin')
+                                            span= tour.startLocation.description
+                                        .card__data
+                                            svg.card__icon
+                                                use(xlink:href='/img/icons.svg#icon-calendar')
+                                            span= tour.startDates && tour.startDates.length > 0 ? new Date(tour.startDates[0].date).toLocaleString('en-ng',{month:'long',year:'numeric'}) : 'Coming Soon'
+                                        .card__data
+                                            svg.card__icon
+                                                use(xlink:href='/img/icons.svg#icon-flag')
+                                            span= `${tour.locations ? tour.locations.length : 0} stops`
+                                        .card__data
+                                            svg.card__icon
+                                                use(xlink:href='/img/icons.svg#icon-user')
+                                            span= `${tour.maxGroupSize} people`
+
+                                    .card__footer
+                                        p
+                                            span.card__footer-value= `$${tour.price}`
+                                            | 
+                                            span.card__footer-text per person
+                                        p.card__ratings
+                                            span.card__footer-value= `${tour.ratingsAverage}`
+                                            | 
+                                            span.card__footer-text= `rating (${tour.ratingsQuantity})`
+                                        a.btn.btn--green.btn--small(href=`/tour/${tour.slug}`) Details

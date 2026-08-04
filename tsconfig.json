@@ -42,5 +42,5 @@
     "skipLibCheck": true,
     "esModuleInterop": true
   },
-  "exclude": ["dev-data", "public", "Bruno Collection Natours"]
+  "exclude": ["dev-data", "public", "Bruno Collection Natours", "dist"]
 }
