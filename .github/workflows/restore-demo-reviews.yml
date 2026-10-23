@@ -30,5 +30,4 @@ jobs:
           NODE_ENV: production
           DATABASE: ${{ secrets.DATABASE }}
           DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
-          DATABASE_LOCAL: ${{ secrets.DATABASE_LOCAL }}
         run: npm run restore-demo-reviews
